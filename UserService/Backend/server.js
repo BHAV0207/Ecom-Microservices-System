@@ -1,5 +1,4 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const connectedDb = require('./utils/DataBase');
 const dotenv = require('dotenv');
 const app = express();
