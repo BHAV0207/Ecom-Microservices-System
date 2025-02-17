@@ -34,36 +34,37 @@ const resolvers = {
       }
     },
 
-    allProducts: async() => {
-      try{
+    allProducts: async () => {
+      try {
         const response = await axios.get(`${PRODUCT_SERVICE_URL}/product/all`);
         return response.data.map((product) => ({
           id: product._id,
           name: product.name,
           price: product.price,
-          stock: product.stock
-        }))
-      }
-      catch(err){
+          stock: product.stock,
+        }));
+      } catch (err) {
         throw new Error("Failed to fetch users");
       }
     },
 
-    getProduct: async(_ , {id}) => {
-      try{
-        const response = await axios.get(`${PRODUCT_SERVICE_URL}/product/${id}`);
-        console.log(response.data)
+    getProduct: async (_, { id }) => {
+      try {
+        const response = await axios.get(
+          `${PRODUCT_SERVICE_URL}/product/${id}`
+        );
+        console.log(response.data);
         const product = response.data;
         return {
-          id : product._id,
-          name : product.name,
-          price : product.price,
-          stock : product.value
-        }
-      }catch(err){
-        throw new Error("User not found");
+          id: product._id,
+          name: product.name,
+          price: product.price,
+          stock: product.stock,
+        };
+      } catch (err) {
+        throw new Error("Product not found");
       }
-    } 
+    },
   },
   Mutation: {
     createUser: async (_, { name, email, password, role }) => {
@@ -105,16 +106,63 @@ const resolvers = {
       };
     },
 
-    login: async (_, {email, password}) =>{
-      const res = await axios.post(`${USER_SERVICE_URL}/user/login`, { email, password });
+    login: async (_, { email, password }) => {
+      const res = await axios.post(`${USER_SERVICE_URL}/user/login`, {
+        email,
+        password,
+      });
       const data = res.data;
-      
-      return{
-        token : data.token
+
+      return {
+        token: data.token,
+      };
+    },
+
+
+    createProduct: async (_, { name, price, stock }) => {
+      try {
+        const response = await axios.post(`${PRODUCT_SERVICE_URL}/product/create`, {
+          name,
+          price,
+          stock,
+        });
+        const newProduct = response.data;
+        return {
+          id: newProduct._id,
+          name: newProduct.name,
+          price: newProduct.price,
+          stock: newProduct.stock,
+        };
+      } catch (error) {
+        throw new Error("Product creation failed");
       }
+    },  
 
-    }
+    updateProduct: async (_, { id, stock }) => {
+      try {
+        const response = await axios.put(`${PRODUCT_SERVICE_URL}/product/update/${id}`, {
+          stock,
+        });
+        const updateProduct = response.data;
+        return {
+          id: updateProduct._id,
+          name: updateProduct.name,
+          price: updateProduct.price,
+          stock: updateProduct.stock,
+        }
+      } catch (error) {
+        throw new Error("Product update failed");
+      }
+    },
 
+    deleteProduct: async (_, { id }) => {
+      try {
+        const response = await axios.delete(`${PRODUCT_SERVICE_URL}/product/delete/${id}`);
+        return response.data;
+      } catch (error) {
+        throw new Error("Product deletion failed");
+      }
+    },
   },
 };
 

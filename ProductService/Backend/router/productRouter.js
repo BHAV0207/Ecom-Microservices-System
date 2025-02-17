@@ -12,6 +12,16 @@ router.get("/all", async (req, res) => {
   }
 });
 
+router.get("/:id" , async (req, res) => {
+  try{
+    const products = await Product.findById(req.params.id);
+    res.json(products);
+  }catch(error){
+    res.status(404).json({message: "Product not found"});
+
+  }
+})
+
 router.post("/create", async (req, res) => {
   const { name, price, stock } = req.body;
 
@@ -60,7 +70,7 @@ router.delete("/delete/:id", async (req, res) => {
       res.status(404).json({ message: "Product not found" });
     }
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({ message: error.message + "product coulden,t be deleted" });
   }
 });
 
