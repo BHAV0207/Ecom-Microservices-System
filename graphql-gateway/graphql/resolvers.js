@@ -2,6 +2,7 @@ const axios = require("axios");
 
 const USER_SERVICE_URL = "http://localhost:8002";
 const PRODUCT_SERVICE_URL = "http://localhost:8000";
+const ORDER_SERVICE_URL = "http://localhost:8001";
 
 const resolvers = {
   Query: {
@@ -65,6 +66,39 @@ const resolvers = {
         throw new Error("Product not found");
       }
     },
+
+    allOrders: async () => {
+      try {
+        const response = await axios.get(`${ORDER_SERVICE_URL}/order/all`);
+        return response.data.map((order) => ({
+          userId: order.userId,
+          productId: order.productId,
+          id: order._id,
+          name: order.name,
+          quantity: order.quantity,
+          status: order.status,
+        }));
+      } catch (error) {
+        throw new Error("Failed to fetch orders");
+      }
+    },
+
+    getOrder: async (_, { id }) => {
+      try {
+        const response = await axios.get(`${ORDER_SERVICE_URL}/order/${id}`);
+        const order = response.data;
+        return {
+          userId: order.userId,
+          productId: order.productId,
+          id: order._id,
+          name: order.name,
+          quantity: order.quantity,
+          status: order.status,
+        };
+      } catch (error) {
+        throw new Error("Order not found");
+      }
+    },
   },
   Mutation: {
     createUser: async (_, { name, email, password, role }) => {
@@ -118,14 +152,16 @@ const resolvers = {
       };
     },
 
-
     createProduct: async (_, { name, price, stock }) => {
       try {
-        const response = await axios.post(`${PRODUCT_SERVICE_URL}/product/create`, {
-          name,
-          price,
-          stock,
-        });
+        const response = await axios.post(
+          `${PRODUCT_SERVICE_URL}/product/create`,
+          {
+            name,
+            price,
+            stock,
+          }
+        );
         const newProduct = response.data;
         return {
           id: newProduct._id,
@@ -136,20 +172,23 @@ const resolvers = {
       } catch (error) {
         throw new Error("Product creation failed");
       }
-    },  
+    },
 
     updateProduct: async (_, { id, stock }) => {
       try {
-        const response = await axios.put(`${PRODUCT_SERVICE_URL}/product/update/${id}`, {
-          stock,
-        });
+        const response = await axios.put(
+          `${PRODUCT_SERVICE_URL}/product/update/${id}`,
+          {
+            stock,
+          }
+        );
         const updateProduct = response.data;
         return {
           id: updateProduct._id,
           name: updateProduct.name,
           price: updateProduct.price,
           stock: updateProduct.stock,
-        }
+        };
       } catch (error) {
         throw new Error("Product update failed");
       }
@@ -157,7 +196,9 @@ const resolvers = {
 
     deleteProduct: async (_, { id }) => {
       try {
-        const response = await axios.delete(`${PRODUCT_SERVICE_URL}/product/delete/${id}`);
+        const response = await axios.delete(
+          `${PRODUCT_SERVICE_URL}/product/delete/${id}`
+        );
         return response.data;
       } catch (error) {
         throw new Error("Product deletion failed");

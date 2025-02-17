@@ -1,16 +1,16 @@
 // models/Order.js
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const OrderSchema = new mongoose.Schema({
   userId: {
-    type: String,  
+    type: String,
     // required: true,
   },
   productId: {
-    type: String, 
+    type: String,
     // required: true,
   },
-  name:{
+  name: {
     type: String,
     required: true,
   },
@@ -18,7 +18,11 @@ const OrderSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  status: { type:String, Enum:['placed','shipped','delivered'], default:'placed'},
+  status: {
+    type: String,
+    Enum: ["placed", "shipped", "delivered"],
+    default: "placed",
+  },
 });
 
-module.exports = mongoose.model('Order', OrderSchema);
+module.exports = mongoose.model("Order", OrderSchema);

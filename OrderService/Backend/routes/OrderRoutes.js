@@ -39,7 +39,7 @@ router.get("/all", async (req, res) => {
   }
 });
 
-router.get("/find/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
     res.json(order);

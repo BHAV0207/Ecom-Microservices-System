@@ -27,12 +27,24 @@ const typeDefs = gql`
     stock: Int!
   }
 
+  type Order {
+    userId: ID
+    productId: ID
+    id: ID!
+    name : String!
+    quantity: Int!
+    status: String!
+  }
+
   type Query {
     allUsers: [User]
     getUser(id: ID!): User
 
     allProducts: [Product]
     getProduct(id: ID!): Product
+
+    allOrders: [Order]
+    getOrder(id: ID!): Order
   }
 
   type Mutation {
@@ -48,6 +60,9 @@ const typeDefs = gql`
     createProduct(name: String!, price: Float!, stock: Int!): Product
     updateProduct(id: ID!, stock: Int!): Product
     deleteProduct(id: ID!): String
+
+    createOrder(userId: ID, productId: ID, name: String!, quantity: Int!, status: String!): Order
+    updateOrder(id: ID!, userId: ID, productId: ID, name: String, quantity: Int, status: String): Order
   }
 `;
 
