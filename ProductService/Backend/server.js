@@ -13,20 +13,8 @@ app.use(express.json());
 const productRouter = require("./router/productRouter");
 app.use("/product", productRouter);
 
-const server = new ApolloServer({ typeDefs, resolvers });
 
-// Start the Apollo Server
-const startServer = async () => {
-  await server.start(); // Await the server to start
-  server.applyMiddleware({ app, path: "/graphql" }); // Apply middleware after server starts
-
-  const port = process.env.PORT || 7001;
-  app.listen(port, () => {
-    console.log(`Server is running on port ${port}${server.graphqlPath}`);
-  });
-};
-
-// Call the start function
-startServer().catch((err) => {
-  console.error("Error starting the server:", err);
-});
+const PORT = process.env.PORT || 7000
+app.listen(PORT, ()=> {
+  console.log("port started " + PORT)
+})
