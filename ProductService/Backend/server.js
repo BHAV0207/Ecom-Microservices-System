@@ -20,7 +20,7 @@ const startServer = async () => {
   await server.start(); // Await the server to start
   server.applyMiddleware({ app, path: "/graphql" }); // Apply middleware after server starts
 
-  const port = 7000;
+  const port = process.env.PORT || 7001;
   app.listen(port, () => {
     console.log(`Server is running on port ${port}${server.graphqlPath}`);
   });
