@@ -18,6 +18,7 @@ const OrderSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  status: { type:String, Enum:['placed','shipped','delivered'], default:'placed'},
 });
 
 module.exports = mongoose.model('Order', OrderSchema);

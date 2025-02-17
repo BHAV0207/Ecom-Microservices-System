@@ -1,14 +1,16 @@
-const express = require('express');
+const express = require("express");
 
 const router = express.Router();
-const Order = require('../models/OrderModel');
+const Order = require("../models/OrderModel");
 
-router.post('/create', async (req, res) => {
+router.post("/create", async (req, res) => {
   try {
-    const { userId, productId,name , quantity } = req.body;
+    const { userId, productId, name, quantity, status } = req.body;
 
     if (!quantity || !name) {
-      return res.status(400).json({ message: 'Please provide all required fields' });
+      return res
+        .status(400)
+        .json({ message: "Please provide all required fields" });
     }
 
     const order = new Order({
@@ -16,6 +18,7 @@ router.post('/create', async (req, res) => {
       productId,
       name,
       quantity,
+      status,
     });
 
     await order.save();
@@ -26,7 +29,7 @@ router.post('/create', async (req, res) => {
   }
 });
 
-router.get('/all', async (req, res) => {
+router.get("/all", async (req, res) => {
   try {
     const orders = await Order.find();
 
@@ -36,12 +39,23 @@ router.get('/all', async (req, res) => {
   }
 });
 
-router.put('/update/:id', async (req, res) => {
+router.get("/find/:id", async (req, res) => {
   try {
-    const { userId, productId, quantity ,name } = req.body;
+    const order = await Order.findById(req.params.id);
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.put("/update/:id", async (req, res) => {
+  try {
+    const { userId, productId, quantity, name, status } = req.body;
 
     if (!quantity) {
-      return res.status(400).json({ message: 'Please provide all required fields' });
+      return res
+        .status(400)
+        .json({ message: "Please provide all required fields" });
     }
 
     const newOrder = {
@@ -49,9 +63,12 @@ router.put('/update/:id', async (req, res) => {
       productId,
       name,
       quantity,
+      status,
     };
 
-    const order = await Order.findByIdAndUpdate(req.params.id, newOrder, { new: true });
+    const order = await Order.findByIdAndUpdate(req.params.id, newOrder, {
+      new: true,
+    });
 
     res.json(order);
   } catch (error) {
