@@ -204,6 +204,53 @@ const resolvers = {
         throw new Error("Product deletion failed");
       }
     },
+
+    createOrder: async (_, { userId, productId, name, quantity, status }) => {
+      try {
+        const response = await axios.post(`${ORDER_SERVICE_URL}/order/create`, {
+          userId,
+          productId,
+          name,
+          quantity,
+          status,
+        });
+        const newOrder = response.data;
+        return {
+          userId: newOrder.userId,
+          productId: newOrder.productId,
+          id: newOrder._id,
+          name: newOrder.name,
+          quantity: newOrder.quantity,
+          status: newOrder.status,
+        };
+      } catch (error) {
+        throw new Error("Order creation failed");
+      }
+    },
+
+    updateOrder: async (_, { id, userId, productId, name, quantity, status }) => {
+      try {
+        console.log("Updating order...");
+        const response = await axios.put(`${ORDER_SERVICE_URL}/order/update/${id}`, {
+          userId,
+          productId,
+          name,
+          quantity,
+          status,
+        });
+        const updatedOrder = response.data;
+        return {
+          userId: updatedOrder.userId,
+          productId: updatedOrder.productId,
+          id: updatedOrder._id,
+          name: updatedOrder.name,
+          quantity: updatedOrder.quantity,
+          status: updatedOrder.status,
+        };
+      } catch (error) {
+        throw new Error("Order update failed");
+      }
+    },
   },
 };
 

@@ -50,13 +50,13 @@ router.get("/:id", async (req, res) => {
 
 router.put("/update/:id", async (req, res) => {
   try {
-    const { userId, productId, quantity, name, status } = req.body;
+    const { userId, productId,name , quantity, status } = req.body;
 
-    if (!quantity) {
-      return res
-        .status(400)
-        .json({ message: "Please provide all required fields" });
-    }
+    // if (!quantity) {
+    //   return res
+    //     .status(400)
+    //     .json({ message: "Please provide all required fields" });
+    // }
 
     const newOrder = {
       userId,
