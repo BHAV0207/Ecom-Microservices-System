@@ -1,10 +1,7 @@
 const express = require("express");
-const { ApolloServer } = require("apollo-server-express");
 const dotenv = require("dotenv");
 const app = express();
 const connectedDb = require("./dataBase/db");
-const typeDefs = require("./graphQl/schema");
-const resolvers = require("./graphQl/resolvers");
 
 dotenv.config();
 connectedDb();

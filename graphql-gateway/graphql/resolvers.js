@@ -1,7 +1,7 @@
 const axios = require("axios");
 
-const USER_SERVICE_URL = "http://localhost:8002";
-const PRODUCT_SERVICE_URL = "http://localhost:8000";
+const USER_SERVICE_URL = "http://localhost:8000";
+const PRODUCT_SERVICE_URL = "http://localhost:8002";
 const ORDER_SERVICE_URL = "http://localhost:8001";
 
 const resolvers = {
