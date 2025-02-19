@@ -27,13 +27,22 @@ const typeDefs = gql`
     stock: Int!
   }
 
-  type Order {
-    userId: ID
-    productId: ID
-    id: ID!
-    name : String!
+  type OrderProduct {
+    productId: ID!
     quantity: Int!
     status: String!
+  }
+
+  input OrderProductInput {
+    productId: ID!
+    quantity: Int!
+    status: String
+  }
+
+  type Order {
+    id: ID!
+    userId: ID!
+    products: [OrderProduct!]!
   }
 
   type Query {
@@ -61,8 +70,8 @@ const typeDefs = gql`
     updateProduct(id: ID!, stock: Int!): Product
     deleteProduct(id: ID!): String
 
-    createOrder(userId: ID, productId: ID, name: String!, quantity: Int!, status: String!): Order
-    updateOrder(id: ID!, userId: ID, productId: ID, name: String, quantity: Int, status: String): Order
+    createOrder(userId: ID!, products: [OrderProductInput!]!): Order
+    updateOrder(id: ID!, userId: ID, products: [OrderProductInput!]): Order
   }
 `;
 

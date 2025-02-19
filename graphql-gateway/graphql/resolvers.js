@@ -4,7 +4,6 @@ const USER_SERVICE_URL = "http://user-service:8000"; // Changed from localhost
 const PRODUCT_SERVICE_URL = "http://product-service:8002"; // Changed from localhost
 const ORDER_SERVICE_URL = "http://order-service:8001"; // Changed from localhost
 
-
 const resolvers = {
   Query: {
     allUsers: async () => {
@@ -71,13 +70,15 @@ const resolvers = {
     allOrders: async () => {
       try {
         const response = await axios.get(`${ORDER_SERVICE_URL}/order/all`);
+        // console.log(response.data[0]);
         return response.data.map((order) => ({
-          userId: order.userId,
-          productId: order.productId,
           id: order._id,
-          name: order.name,
-          quantity: order.quantity,
-          status: order.status,
+          userId: order.userId,
+          products: order.products.map((product) => ({
+            id: product.producId,
+            quantity: product.quantity,
+            status: product.status,
+          }))
         }));
       } catch (error) {
         throw new Error("Failed to fetch orders");
@@ -89,12 +90,13 @@ const resolvers = {
         const response = await axios.get(`${ORDER_SERVICE_URL}/order/${id}`);
         const order = response.data;
         return {
-          userId: order.userId,
-          productId: order.productId,
           id: order._id,
-          name: order.name,
-          quantity: order.quantity,
-          status: order.status,
+          userId: order.userId,
+          products: order.products.map((product) => ({
+            id: product.producId,
+            quantity: product.quantity,
+            status: product.status,
+          })),
         };
       } catch (error) {
         throw new Error("Order not found");
@@ -153,48 +155,6 @@ const resolvers = {
       };
     },
 
-    createProduct: async (_, { name, price, stock }) => {
-      try {
-        const response = await axios.post(
-          `${PRODUCT_SERVICE_URL}/product/create`,
-          {
-            name,
-            price,
-            stock,
-          }
-        );
-        const newProduct = response.data;
-        return {
-          id: newProduct._id,
-          name: newProduct.name,
-          price: newProduct.price,
-          stock: newProduct.stock,
-        };
-      } catch (error) {
-        throw new Error("Product creation failed");
-      }
-    },
-
-    updateProduct: async (_, { id, stock }) => {
-      try {
-        const response = await axios.put(
-          `${PRODUCT_SERVICE_URL}/product/update/${id}`,
-          {
-            stock,
-          }
-        );
-        const updateProduct = response.data;
-        return {
-          id: updateProduct._id,
-          name: updateProduct.name,
-          price: updateProduct.price,
-          stock: updateProduct.stock,
-        };
-      } catch (error) {
-        throw new Error("Product update failed");
-      }
-    },
-
     deleteProduct: async (_, { id }) => {
       try {
         const response = await axios.delete(
@@ -206,49 +166,55 @@ const resolvers = {
       }
     },
 
-    createOrder: async (_, { userId, productId, name, quantity, status }) => {
+    createOrder: async (_, { userId, products }) => {
       try {
         const response = await axios.post(`${ORDER_SERVICE_URL}/order/create`, {
           userId,
-          productId,
-          name,
-          quantity,
-          status,
+          products,
         });
-        const newOrder = response.data;
+
+        const newOrder = response.data.order;
+        console.log(newOrder);
+
         return {
-          userId: newOrder.userId,
-          productId: newOrder.productId,
           id: newOrder._id,
-          name: newOrder.name,
-          quantity: newOrder.quantity,
-          status: newOrder.status,
+          userId: newOrder.userId,
+          products: newOrder.products.map((product) => ({
+            productId: product.productId,
+            quantity: product.quantity,
+            status: product.status,
+          })),
         };
       } catch (error) {
+        console.error("Order creation error:", error.message);
         throw new Error("Order creation failed");
       }
     },
 
-    updateOrder: async (_, { id, userId, productId, name, quantity, status }) => {
+    updateOrder: async (_, { id, userId, products }) => {
       try {
         console.log("Updating order...");
-        const response = await axios.put(`${ORDER_SERVICE_URL}/order/update/${id}`, {
-          userId,
-          productId,
-          name,
-          quantity,
-          status,
-        });
-        const updatedOrder = response.data;
+        const response = await axios.put(
+          `${ORDER_SERVICE_URL}/order/update/${id}`,
+          {
+            userId,
+            products, // Send the updated product list
+          }
+        );
+
+        const updatedOrder = response.data.order;
+
         return {
-          userId: updatedOrder.userId,
-          productId: updatedOrder.productId,
           id: updatedOrder._id,
-          name: updatedOrder.name,
-          quantity: updatedOrder.quantity,
-          status: updatedOrder.status,
+          userId: updatedOrder.userId,
+          products: updatedOrder.products.map((product) => ({
+            id: product.productId,
+            quantity: product.quantity,
+            status: product.status,
+          })),
         };
       } catch (error) {
+        console.error("Order update error:", error.message);
         throw new Error("Order update failed");
       }
     },

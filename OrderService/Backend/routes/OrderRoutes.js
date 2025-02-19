@@ -1,29 +1,36 @@
 const express = require("express");
-
 const router = express.Router();
 const Order = require("../models/OrderModel");
 
 router.post("/create", async (req, res) => {
   try {
-    const { userId, productId, name, quantity, status } = req.body;
+    const { userId, products } = req.body;
 
-    if (!quantity || !name) {
-      return res
-        .status(400)
-        .json({ message: "Please provide all required fields" });
+    if (
+      !userId ||
+      !products ||
+      !Array.isArray(products) ||
+      products.length === 0
+    ) {
+      return res.status(400).json({ message: "Invalid request data" });
+    }
+
+    for (const product of products) {
+      if (!product.productId || !product.quantity) {
+        return res
+          .status(400)
+          .json({ message: "Each product must have _id and quantity" });
+      }
     }
 
     const order = new Order({
       userId,
-      productId,
-      name,
-      quantity,
-      status,
+      products: products,
     });
 
     await order.save();
 
-    res.status(201).json(order);
+    res.status(201).json({ message: "Order created successfully", order });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -39,6 +46,8 @@ router.get("/all", async (req, res) => {
   }
 });
 
+
+
 router.get("/:id", async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -48,32 +57,48 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+
+
 router.put("/update/:id", async (req, res) => {
   try {
-    const { userId, productId,name , quantity, status } = req.body;
+    const { userId, products } = req.body;
 
-    // if (!quantity) {
-    //   return res
-    //     .status(400)
-    //     .json({ message: "Please provide all required fields" });
-    // }
+    if (
+      !userId ||
+      !products ||
+      !Array.isArray(products) ||
+      products.length === 0
+    ) {
+      return res.status(400).json({ message: "Invalid request data" });
+    }
 
-    const newOrder = {
-      userId,
-      productId,
-      name,
-      quantity,
-      status,
-    };
 
-    const order = await Order.findByIdAndUpdate(req.params.id, newOrder, {
-      new: true,
-    });
+    for (const product of products) {
+      if (!product.productId || !product.quantity) {
+        return res
+          .status(400)
+          .json({ message: "Each product must have _id and quantity" });
+      }
+    }
 
-    res.json(order);
+    const updatedOrder = await Order.findByIdAndUpdate(
+      req.params.id,
+      {
+        userId,
+        products: products,
+      },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    res.json({ message: "Order updated successfully", order: updatedOrder });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
+
 
 module.exports = router;
