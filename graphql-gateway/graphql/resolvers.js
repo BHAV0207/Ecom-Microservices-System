@@ -1,8 +1,9 @@
 const axios = require("axios");
 
-const USER_SERVICE_URL = "http://localhost:8000";
-const PRODUCT_SERVICE_URL = "http://localhost:8002";
-const ORDER_SERVICE_URL = "http://localhost:8001";
+const USER_SERVICE_URL = "http://user-service:8000"; // Changed from localhost
+const PRODUCT_SERVICE_URL = "http://product-service:8002"; // Changed from localhost
+const ORDER_SERVICE_URL = "http://order-service:8001"; // Changed from localhost
+
 
 const resolvers = {
   Query: {
