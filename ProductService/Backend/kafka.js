@@ -1,4 +1,5 @@
-const {kafka} = require('kafkajs');
+const { Kafka } = require("kafkajs");
+
 
 const kafka = new Kafka({
   clientId: "product-service",

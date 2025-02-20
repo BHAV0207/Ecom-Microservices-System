@@ -69,12 +69,12 @@ const resolvers = {
     allOrders: async () => {
       try {
         const response = await axios.get(`${ORDER_SERVICE_URL}/order/all`);
-        // console.log(response.data[0]);
+        console.log(response.data[0]);
         return response.data.map((order) => ({
           id: order._id,
           userId: order.userId,
           products: order.products.map((product) => ({
-            id: product.producId,
+            productId: product.productId,
             quantity: product.quantity,
             status: product.status,
           }))
@@ -92,7 +92,7 @@ const resolvers = {
           id: order._id,
           userId: order.userId,
           products: order.products.map((product) => ({
-            id: product.producId,
+            productId: product.productId,
             quantity: product.quantity,
             status: product.status,
           })),

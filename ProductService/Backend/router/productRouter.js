@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const Product = require("../model/productModel");
+const authMiddleware = require("../middleware");
 
 router.get("/all", async (req, res) => {
   try {
@@ -22,7 +23,7 @@ router.get("/:id" , async (req, res) => {
   }
 })
 
-router.post("/create", async (req, res) => {
+router.post("/create", authMiddleware, async (req, res) => {
   const { name, price, stock } = req.body;
 
   try {
@@ -33,7 +34,7 @@ router.post("/create", async (req, res) => {
     });
 
     const newProduct = await product.save();
-    res.status(201).json(newProduct);
+    res.status(201).json({message : "product created" , newProduct});
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
