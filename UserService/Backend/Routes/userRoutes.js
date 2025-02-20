@@ -4,6 +4,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const authMiddleware = require("../middelWare/authMiddleware");
+const {producer , connectProducer} = require('../kafka');
+
+connectProducer();
 
 Router.post("/register", async (req, res) => {
   const { name, email, password, role } = req.body;
@@ -23,6 +26,12 @@ Router.post("/register", async (req, res) => {
       role,
     });
     await newUser.save();
+
+    await producer.send({
+      topic : 'user-created',
+      messages : [{ value : JSON.stringify(newUser)}]
+    })
+
     res.status(200).json({ message: "User created successfully" , newUser } );
   } catch (err) {
     console.log(err);

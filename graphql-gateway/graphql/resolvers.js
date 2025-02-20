@@ -54,7 +54,6 @@ const resolvers = {
         const response = await axios.get(
           `${PRODUCT_SERVICE_URL}/product/${id}`
         );
-        console.log(response.data);
         const product = response.data;
         return {
           id: product._id,
