@@ -154,6 +154,28 @@ const resolvers = {
       };
     },
 
+    createProduct: async (_, { name, price, stock }) => {
+      try {
+        const response = await axios.post(`${PRODUCT_SERVICE_URL}/product/create`, {
+          name,
+          price,
+          stock,
+        });
+
+        const newProduct = response.data.newProduct;
+
+        return {
+          id: newProduct._id,
+          name: newProduct.name,
+          price: newProduct.price,
+          stock: newProduct.stock,
+        };
+      } catch (error) {
+        console.error("Product creation error:", error.message);
+        throw new Error("Product creation failed");
+      }
+    },
+
     deleteProduct: async (_, { id }) => {
       try {
         const response = await axios.delete(
@@ -166,12 +188,13 @@ const resolvers = {
     },
 
     createOrder: async (_, { userId, products }) => {
+      console.log("Creating order...");
       try {
         const response = await axios.post(`${ORDER_SERVICE_URL}/order/create`, {
           userId,
           products,
         });
-
+        console.log(response.data);
         const newOrder = response.data.order;
         console.log(newOrder);
 
