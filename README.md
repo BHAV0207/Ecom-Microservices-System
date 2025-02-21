@@ -36,3 +36,8 @@ This project consists of **four microservices**:
 ```sh
 git clone https://github.com/your-repo/microservices-app.git
 cd microservices-app
+```
+### Build the project and run
+```sh
+docker compose up --build
+
