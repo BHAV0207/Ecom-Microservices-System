@@ -7,6 +7,10 @@ This project consists of **four microservices**:
 3. **Order Service** - Handles order creation, processing, and Kafka events.
 4. **Product Service** - Manages products and stock updates.
 
+## Architecture
+![ecom architecture](https://github.com/user-attachments/assets/9bece22a-edf3-42ec-8b01-efabe77b9a87)
+
+
 ### ✅ Technologies Used
 - **Node.js** - Backend framework for each microservice.
 - **GraphQL** - API gateway to communicate with all services.
